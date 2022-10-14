@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pc端抽奖</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div class="box">
+      <div class="title">猜盲盒 带回家</div>
+      <div class="grid-box">
+        <div
+          v-for="(item,index) in drawList"
+          :key="index"
+          class="grid-item"
+          @click="changeItem(item,index)"
+        >
+          <img
+            v-if="!item.isAct"
+            :class="['grid-img-item',item.animation?'grid-img-item-active':'']"
+            src="./images/1.png"
+            alt=""
+          />
+          <img v-else class="grid-img-item" src="./images/2.png" alt="" />
+          <div class="grid-text">{{item.text}}</div>
+        </div>
+      </div>
+      <!-- 底部奖品提示 -->
+      <div class="footer">
+        <div class="footer-tip">
+          此盒子里面有：{{prizeList[prizeIndex].text}}
+        </div>
+        <div class="footer-btn" @click="close">开启下一轮</div>
+      </div>
+      <!-- 奖品弹框 -->
+      <div :class="['popup']" v-if="isPupop">
+        <div :class="['popup-con',isPupop?'popup-con-open':'']" v-if="!isLucky">
+          <div class="empty-text">空空如也</div>
+          <div class="btn" @click="isPupop = false">确定</div>
+        </div>
+        <!-- 中奖界面 -->
+        <div
+          :class="['popup-con-z', isPupop?'popup-con-open':'']"
+          v-if="isLucky"
+        >
+          <div class="popup-con-title">猜中了</div>
+          <div class="z-box">
+            <img class="z-img" :src="prizeList[prizeIndex].img" alt="" />
+            <div class="z-name">{{prizeList[prizeIndex].text}}</div>
+          </div>
+          <div class="btn" @click="close">确定</div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.10"></script>
+    <script>
+      new Vue({
+        el: ".box",
+        data: {
+          Auther: "Ah",
+          current: null,
+          prizeIndex: null, //当前这轮中奖的奖品下标
+          gridIndex: null, // 当前这轮九宫格 下有奖品的下标
+          isLucky: false, // 是否中奖
+          isPupop: false, // 弹框是否展示
+          prizeList: [
+            {
+              id: 1,
+              text: "GG脏脏鞋",
+              img: "./xiezi-img/WechatIMG21.jpeg",
+            },
+            {
+              id: 2,
+              text: "LV蓝白trainer",
+              img: "./xiezi-img/WechatIMG22.jpeg",
+            },
+            {
+              id: 3,
+              text: "闪电倒钩",
+              img: "./xiezi-img/WechatIMG23.jpeg",
+            },
+            {
+              id: 4,
+              text: "椰子350",
+              img: "./xiezi-img/WechatIMG57.jpeg",
+            },
+          ],
+          drawList: [
+            {
+              text: "盲盒一",
+              animation: false,
+              isAct: false,
+            },
+            {
+              text: "盲盒二",
+              animation: false,
+              isAct: false,
+            },
+            {
+              text: "盲盒三",
+              animation: false,
+              isAct: false,
+            },
+            {
+              text: "盲盒四",
+              animation: false,
+              isAct: false,
+            },
+
+            {
+              text: "盲盒五",
+              animation: false,
+              isAct: false,
+            },
+            {
+              text: "盲盒六",
+              animation: false,
+              isAct: false,
+            },
+            {
+              text: "盲盒七",
+              animation: false,
+              isAct: false,
+            },
+            {
+              text: "盲盒八",
+              animation: false,
+              isAct: false,
+            },
+            {
+              text: "盲盒九",
+              animation: false,
+              isAct: false,
+            },
+          ],
+        },
+        created() {
+          this.handleMath();
+        },
+        methods: {
+          //点击盒子触发
+          changeItem(item, index) {
+            this.drawList[index].animation = true;
+            setTimeout(() => {
+              this.drawList[index].isAct = true;
+              this.isPupop = true;
+              this.isLucky = index === this.gridIndex; //中奖条件
+            }, 1500);
+          },
+          // 关闭弹框
+          close() {
+            // 中奖之后开启下一轮
+            this.drawList.forEach((e) => {
+              e.isAct = false;
+              e.animation = false;
+            });
+            this.isLucky = false;
+            this.handleMath();
+            this.isPupop = false;
+          },
+          // 获取随机数
+          handleMath() {
+            this.prizeIndex = Math.round(Math.random() * 3);
+            this.gridIndex = Math.round(Math.random() * 8);
+            console.log(this.prizeIndex, this.gridIndex);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
